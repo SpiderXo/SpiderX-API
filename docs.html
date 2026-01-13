@@ -1,54 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>SpiderX API Docs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
       background: #000;
       color: #fff;
+      font-family: "Segoe UI", sans-serif;
+      padding: 20px;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 30px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
-    header h2 {
+    h1, h2 {
       color: #ff2e63;
-      letter-spacing: 1px;
-    }
-
-    header a {
-      color: #aaa;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 50px 20px;
-    }
-
-    h1 {
-      color: #ff2e63;
-      margin-bottom: 30px;
     }
 
     .card {
       background: #0c0c0c;
+      padding: 20px;
       border-radius: 12px;
-      padding: 25px;
       margin-bottom: 30px;
-      box-shadow: 0 0 30px rgba(255, 46, 99, 0.08);
     }
 
     .endpoint {
@@ -59,84 +32,158 @@
 
     pre {
       background: #000;
-      padding: 18px;
+      padding: 15px;
       border-radius: 8px;
       overflow-x: auto;
       font-size: 14px;
     }
 
-    .btn {
-      margin-top: 15px;
+    button {
+      margin-top: 10px;
+      padding: 10px 18px;
       background: linear-gradient(135deg, #ff2e63, #9b5cff);
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
       color: #fff;
+      border-radius: 6px;
       cursor: pointer;
     }
 
-    .btn:hover {
-      box-shadow: 0 0 25px rgba(255, 46, 99, 0.4);
+    button:hover {
+      box-shadow: 0 0 20px rgba(255, 46, 99, 0.4);
     }
 
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #555;
-      font-size: 13px;
+    input {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 240px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    a {
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    hr {
+      border: 1px solid #111;
+      margin: 50px 0;
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <h2>SpiderX API 🕸</h2>
-  <a href="/">Home</a>
-</header>
+<a href="index.html">⬅ Back Home</a>
 
-<div class="container">
-  <h1>Documentation</h1>
+<h1>🕷 SpiderX API Documentation</h1>
 
-  <div class="card">
-    <div class="endpoint">GET /status</div>
-    <pre>{
-  "status": "online",
-  "service": "SpiderX API"
-}</pre>
-    <button class="btn" onclick="testStatus()">Test Endpoint</button>
-  </div>
+<!-- STATUS ENDPOINT -->
+<div class="card">
+  <div class="endpoint">GET /api/status</div>
 
-  <div class="card">
-    <div class="endpoint">GET /version</div>
-    <pre>{
-  "version": "1.0.0",
-  "codename": "Black Venom"
-}</pre>
-  </div>
+  <pre id="status-endpoint">/api/status</pre>
+
+  <button onclick="copyEndpoint()">Copy Endpoint</button>
+  <button onclick="testStatus()">🧪 Live Test</button>
 </div>
 
-<footer>
-  SpiderX API © 2026 — Built with logic, not templates.
-</footer>
+<!-- VERSION ENDPOINT -->
+<div class="card">
+  <div class="endpoint">GET /api/version</div>
+
+  <pre>/api/version</pre>
+</div>
+
+<hr>
+
+<!-- LOGIN -->
+<h2>Login</h2>
+
+<div class="card">
+  <input id="u" placeholder="Username">
+  <input id="p" type="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+
+  <p style="color:#aaa;font-size:14px">
+    Demo login:<br>
+    username: <b>spiderx</b><br>
+    password: <b>123456</b>
+  </p>
+</div>
+
+<hr>
+
+<!-- API KEY -->
+<h2>🔐 Your API Key</h2>
+
+<div class="card">
+  <pre id="apiKey">Not logged in</pre>
+</div>
+
+<hr>
+
+<!-- ABOUT -->
+<h2>👤 About Owner</h2>
+
+<div class="card">
+  <p>Name: <b>SpiderX</b></p>
+  <p>Independent developer.</p>
+  <p>Built with logic, not templates.</p>
+</div>
 
 <script>
-  function testStatus() {
-    fetch("/api/status")
-      .then(res => res.json())
-      .then(data => {
-        alert(JSON.stringify(data, null, 2));
-      })
-      .catch(() => {
-        alert("API not reachable");
-      });
-  }
-</script>
+function copyEndpoint() {
+  navigator.clipboard.writeText("/api/status");
+  alert("Endpoint copied!");
+}
 
-</body>
-</html>          alert('API not responding');
-        });
+function testStatus() {
+  const key = localStorage.getItem("apiKey");
+
+  fetch("/api/status", {
+    headers: {
+      "x-api-key": key || ""
     }
-  </script>
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(JSON.stringify(data, null, 2));
+  })
+  .catch(() => {
+    alert("API not reachable");
+  });
+}
+
+function login() {
+  fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: u.value,
+      password: p.value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.apiKey) {
+      localStorage.setItem("apiKey", data.apiKey);
+      document.getElementById("apiKey").innerText = data.apiKey;
+      alert("Login successful!");
+    } else {
+      alert("Login failed");
+    }
+  });
+}
+
+// show saved key if exists
+const savedKey = localStorage.getItem("apiKey");
+if (savedKey) {
+  document.getElementById("apiKey").innerText = savedKey;
+}
+</script>
 
 </body>
 </html>
