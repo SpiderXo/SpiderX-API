@@ -3,51 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <title>SpiderX API Docs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background:#0b0f1a;
+      color:#fff;
+      font-family:Arial;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+    .box {
+      background:#111827;
+      padding:30px;
+      border-radius:12px;
+      width:300px;
+      text-align:center;
+      box-shadow:0 0 20px #000;
+    }
+    input, button {
+      width:100%;
+      padding:10px;
+      margin-top:10px;
+      border-radius:6px;
+      border:none;
+    }
+    button {
+      background:#dc2626;
+      color:#fff;
+      cursor:pointer;
+    }
+    button:hover {
+      opacity:.8;
+    }
+    .error {
+      color:#f87171;
+      margin-top:10px;
+    }
+  </style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center">
+<body>
 
-<div class="bg-gray-900 p-8 rounded-xl w-full max-w-md shadow-lg">
-  <h1 class="text-3xl font-bold text-center text-red-500 mb-6">SpiderX API 🕸</h1>
+<div class="box">
+  <h2>SpiderX Login 🕸</h2>
 
-  <h2 class="text-xl mb-4 text-center">Login to Dashboard</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
 
-  <input id="username"
-    class="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-700"
-    placeholder="Username">
+  <button onclick="login()">Login</button>
 
-  <input id="password" type="password"
-    class="w-full mb-4 p-2 rounded bg-gray-800 border border-gray-700"
-    placeholder="Password">
-
-  <button onclick="login()"
-    class="w-full bg-red-600 hover:bg-red-700 transition p-2 rounded font-bold">
-    Login
-  </button>
-
-  <p id="msg" class="text-center mt-4 text-red-400"></p>
+  <div id="msg" class="error"></div>
 </div>
 
 <script>
-function login() {
-  const username = username.value;
-  const password = password.value;
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const msg = document.getElementById("msg");
 
-  fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  })
-  .then(r => r.json())
-  .then(d => {
-    if (d.token) {
-      localStorage.setItem("token", d.token);
-      localStorage.setItem("apiKey", d.apiKey);
-      location.href = "/dashboard.html";
-    } else {
-      msg.innerText = "Login failed";
+  msg.innerText = "Loading...";
+
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      msg.innerText = data.error || "Login failed";
+      return;
     }
-  });
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("apiKey", data.apiKey);
+
+    window.location.href = "/dashboard.html";
+
+  } catch (e) {
+    msg.innerText = "Server error";
+  }
 }
 </script>
 
