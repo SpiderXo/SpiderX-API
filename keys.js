@@ -1,8 +1,8 @@
 export const USERS = [
   {
+    id: 1,
     username: "spiderx",
-    apiKey: "SPIDERX-KEY-1",
-    requests: 0,
-    lastRequest: 0
+    apiKey: "SPIDERX-KEY-123",
+    requests: 0
   }
 ];
