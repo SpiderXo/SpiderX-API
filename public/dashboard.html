@@ -4,29 +4,41 @@
   <title>SpiderX Dashboard</title>
 </head>
 <body>
-  <h1>SpiderX Dashboard 🕸</h1>
-  <p id="user"></p>
-  <p id="requests"></p>
 
-  <script>
-    const apiKey = localStorage.getItem("apiKey");
+<h1>SpiderX Dashboard 🕸</h1>
 
-    if (!apiKey) {
-      alert("Login first");
-    }
+<p id="user"></p>
+<p id="requests"></p>
 
-    fetch("/api/me", {
-      headers: {
-        "x-api-key": apiKey
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("user").innerText =
-        "User: " + data.username;
-      document.getElementById("requests").innerText =
-        "Requests used: " + data.requests;
-    });
-  </script>
+<button onclick="logout()">Logout</button>
+
+<script>
+const apiKey = localStorage.getItem("apiKey");
+
+if (!apiKey) {
+  alert("Not logged in");
+  window.location.href = "/docs.html";
+}
+
+fetch("/api/me", {
+  headers: {
+    "x-api-key": apiKey
+  }
+})
+.then(res => res.json())
+.then(data => {
+  document.getElementById("user").innerText =
+    "User: " + data.username;
+
+  document.getElementById("requests").innerText =
+    "Requests used: " + data.requests;
+});
+
+function logout() {
+  localStorage.removeItem("apiKey");
+  window.location.href = "/docs.html";
+}
+</script>
+
 </body>
 </html>
