@@ -1,187 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>SpiderX API Docs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: "Segoe UI", sans-serif;
-      padding: 20px;
-    }
-
-    h1, h2 {
-      color: #ff2e63;
-    }
-
-    .card {
-      background: #0c0c0c;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 30px;
-    }
-
-    .endpoint {
-      color: #9b5cff;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    pre {
-      background: #000;
-      padding: 15px;
-      border-radius: 8px;
-      overflow-x: auto;
-      font-size: 14px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 18px;
-      background: linear-gradient(135deg, #ff2e63, #9b5cff);
-      border: none;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      box-shadow: 0 0 20px rgba(255, 46, 99, 0.4);
-    }
-
-    input {
-      display: block;
-      margin: 10px 0;
-      padding: 10px;
-      width: 240px;
-      border-radius: 6px;
-      border: none;
-    }
-
-    a {
-      color: #aaa;
-      text-decoration: none;
-    }
-
-    hr {
-      border: 1px solid #111;
-      margin: 50px 0;
-    }
-  </style>
+  <title>SpiderX Docs</title>
 </head>
-
 <body>
 
-<a href="index.html">⬅ Back Home</a>
+<h1>SpiderX API Docs 🕸</h1>
 
-<h1>🕷 SpiderX API Documentation</h1>
-
-<!-- STATUS ENDPOINT -->
-<div class="card">
-  <div class="endpoint">GET /api/status</div>
-
-  <pre id="status-endpoint">/api/status</pre>
-
-  <button onclick="copyEndpoint()">Copy Endpoint</button>
-  <button onclick="testStatus()">🧪 Live Test</button>
-</div>
-
-<!-- VERSION ENDPOINT -->
-<div class="card">
-  <div class="endpoint">GET /api/version</div>
-
-  <pre>/api/version</pre>
-</div>
-
-<hr>
-
-<!-- LOGIN -->
 <h2>Login</h2>
-
-<div class="card">
-  <input id="u" placeholder="Username">
-  <input id="p" type="password" placeholder="Password">
-
-  <button onclick="login()">Login</button>
-
-  <p style="color:#aaa;font-size:14px">
-    Demo login:<br>
-    username: <b>spiderx</b><br>
-    password: <b>123456</b>
-  </p>
-</div>
-
-<hr>
-
-<!-- API KEY -->
-<h2>🔐 Your API Key</h2>
-
-<div class="card">
-  <pre id="apiKey">Not logged in</pre>
-</div>
-
-<hr>
-
-<!-- ABOUT -->
-<h2>👤 About Owner</h2>
-
-<div class="card">
-  <p>Name: <b>SpiderX</b></p>
-  <p>Independent developer.</p>
-  <p>Built with logic, not templates.</p>
-</div>
+<input id="username" placeholder="username">
+<br>
+<input id="password" type="password" placeholder="password">
+<br><br>
+<button onclick="login()">Login</button>
 
 <script>
-function copyEndpoint() {
-  navigator.clipboard.writeText("/api/status");
-  alert("Endpoint copied!");
-}
-
-function testStatus() {
-  const key = localStorage.getItem("apiKey");
-
-  fetch("/api/status", {
-    headers: {
-      "x-api-key": key || ""
-    }
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert(JSON.stringify(data, null, 2));
-  })
-  .catch(() => {
-    alert("API not reachable");
-  });
-}
-
 function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
   fetch("/api/login", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: u.value,
-      password: p.value
-    })
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username, password })
   })
   .then(res => res.json())
   .then(data => {
     if (data.apiKey) {
+      // 🔥 نحفظ الـ API Key
       localStorage.setItem("apiKey", data.apiKey);
-      document.getElementById("apiKey").innerText = data.apiKey;
-      alert("Login successful!");
+
+      // 🔥 نروح على Dashboard
+      window.location.href = "/dashboard.html";
     } else {
       alert("Login failed");
     }
   });
-}
-
-// show saved key if exists
-const savedKey = localStorage.getItem("apiKey");
-if (savedKey) {
-  document.getElementById("apiKey").innerText = savedKey;
 }
 </script>
 
