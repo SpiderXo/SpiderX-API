@@ -3,39 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <title>SpiderX Dashboard</title>
+
 <style>
-body{
-  background:#0b0f1a;
-  color:white;
-  font-family:Arial;
-  padding:20px;
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(180deg,#05070d,#090f22);
+  font-family: Arial, sans-serif;
+  color: #fff;
 }
-button{
-  background:#ff2d55;
-  border:none;
-  padding:10px 15px;
-  color:white;
-  cursor:pointer;
-  border-radius:6px;
+
+header {
+  padding: 20px;
+  font-size: 28px;
+  letter-spacing: 1px;
+  filter: drop-shadow(0 0 18px rgba(255,46,99,.25));
+}
+
+.box {
+  margin: 30px;
+  padding: 25px;
+  background: #0c1224;
+  border-radius: 14px;
+  box-shadow: 0 0 35px rgba(0,0,0,.5);
+}
+
+.key {
+  margin-top: 10px;
+  background: #05070d;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #ff2e63;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: .3s;
+}
+
+button:hover {
+  box-shadow: 0 0 25px rgba(255,46,99,.4);
 }
 </style>
 </head>
+
 <body>
 
-<h1>SpiderX Dashboard</h1>
-<p>Your API Key:</p>
-<code>SPIDERX-KEY-123456</code>
+<header>SpiderX Dashboard</header>
 
-<br><br>
-<button onclick="logout()">Logout</button>
+<div class="box">
+  <h3>Your API Key</h3>
+  <div class="key" id="key"></div>
+
+  <button onclick="logout()">Logout</button>
+</div>
 
 <script>
-if(localStorage.getItem("logged")!=="yes"){
+const token = localStorage.getItem("token");
+const apiKey = localStorage.getItem("apiKey");
+
+if(!token){
   location.href="index.html";
 }
 
+fetch("/api/me", {
+  headers:{
+    "Authorization":"Bearer "+token
+  }
+})
+.then(r=>{
+  if(!r.ok){
+    localStorage.clear();
+    location.href="index.html";
+  }
+});
+
+document.getElementById("key").innerText = apiKey;
+
 function logout(){
-  localStorage.removeItem("logged");
+  localStorage.clear();
   location.href="index.html";
 }
 </script>
