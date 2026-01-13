@@ -1,11 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Spider-X API</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpiderX API</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .logo {
+      width: 220px;
+      margin-bottom: 25px;
+      filter: drop-shadow(0 0 25px rgba(255, 46, 99, 0.35));
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff2e63, #9b5cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #aaa;
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 26px;
+      border: 1px solid #333;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      background: linear-gradient(90deg, #ff2e63, #9b5cff);
+      border-color: transparent;
+    }
+  </style>
 </head>
-<body style="background:#0d0d0d;color:white;text-align:center;padding-top:40vh;font-family:Arial">
-  <h1>🚀 Spider-X API</h1>
-  <p>Your API service is live</p>
+
+<body>
+  <div class="hero">
+    <img src="logo.png" alt="SpiderX API Logo" class="logo" />
+
+    <h1>SpiderX API</h1>
+    <p>Built fast. No noise. Just power.</p>
+
+    <a href="#docs" class="btn">→ View Docs</a>
+  </div>
 </body>
 </html>
