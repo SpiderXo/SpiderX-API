@@ -1,12 +1,24 @@
-export default function handler(req, res) {
-  const auth = req.headers.authorization;
+import { db } from "../lib/db.js";
 
-  if (!auth || !auth.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "No token" });
+export default async function handler(req, res) {
+  try {
+    const apiKey = req.headers["x-api-key"];
+
+    if (!apiKey) {
+      return res.status(401).json({ error: "API key missing" });
+    }
+
+    const user = await db.get(
+      "SELECT username, apiKey, plan, requests FROM users WHERE apiKey = ?",
+      apiKey
+    );
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid API key" });
+    }
+
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
   }
-
-  res.json({
-    username: "SpiderX",
-    apiKey: "SPIDERX-KEY-123456"
-  });
 }
