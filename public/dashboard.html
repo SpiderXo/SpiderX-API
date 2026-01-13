@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html>
-<body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SpiderX Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen p-6">
 
-<h1>SpiderX Dashboard 🕸</h1>
-<pre id="data"></pre>
+<div class="max-w-3xl mx-auto">
 
-<button onclick="logout()">Logout</button>
+  <h1 class="text-3xl font-bold text-red-500 mb-6">SpiderX Dashboard 🕸</h1>
+
+  <div class="bg-gray-900 p-6 rounded-xl shadow mb-6">
+    <p><b>User:</b> <span id="user"></span></p>
+    <p><b>Plan:</b> <span id="plan"></span></p>
+    <p><b>Requests:</b> <span id="requests"></span></p>
+    <p class="mt-2"><b>API Key:</b></p>
+    <code class="block bg-gray-800 p-2 rounded mt-1" id="apiKey"></code>
+  </div>
+
+  <button onclick="logout()"
+    class="bg-red-600 hover:bg-red-700 p-2 rounded font-bold">
+    Logout
+  </button>
+
+</div>
 
 <script>
 const token = localStorage.getItem("token");
+if (!token) location.href = "/docs.html";
 
 fetch("/api/me", {
-  headers: {
-    Authorization: "Bearer " + token
-  }
+  headers: { Authorization: "Bearer " + token }
 })
 .then(r => r.json())
 .then(d => {
-  document.getElementById("data").innerText =
-    JSON.stringify(d, null, 2);
+  user.innerText = d.username;
+  plan.innerText = d.plan;
+  requests.innerText = d.requests;
+  apiKey.innerText = d.apiKey;
 });
 
 function logout() {
