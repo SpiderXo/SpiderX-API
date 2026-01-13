@@ -1,91 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SpiderX API Docs</title>
-  <style>
-    body {
-      background:#0b0f1a;
-      color:#fff;
-      font-family:Arial;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-    }
-    .box {
-      background:#111827;
-      padding:30px;
-      border-radius:12px;
-      width:300px;
-      text-align:center;
-      box-shadow:0 0 20px #000;
-    }
-    input, button {
-      width:100%;
-      padding:10px;
-      margin-top:10px;
-      border-radius:6px;
-      border:none;
-    }
-    button {
-      background:#dc2626;
-      color:#fff;
-      cursor:pointer;
-    }
-    button:hover {
-      opacity:.8;
-    }
-    .error {
-      color:#f87171;
-      margin-top:10px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>SpiderX API Docs</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0b0f;
+  color: #fff;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+}
+
+h1 {
+  font-size: 46px;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #ff2e63;
+  filter: drop-shadow(0 0 18px rgba(255, 46, 99, 0.25));
+}
+
+.card {
+  background: #111827;
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 25px;
+}
+
+.endpoint {
+  background: #000;
+  padding: 15px;
+  border-radius: 10px;
+  font-family: monospace;
+}
+
+.btn {
+  background: #ff2e63;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  box-shadow: 0 0 25px rgba(255, 46, 99, 0.4);
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.small {
+  color: #aaa;
+  font-size: 14px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>SpiderX Login 🕸</h2>
+<div class="container">
 
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
+<h1>SpiderX API Documentation 🕸</h1>
 
-  <button onclick="login()">Login</button>
+<!-- API STATUS -->
+<div class="card">
+  <h3>GET /api/status</h3>
+  <div class="endpoint">/api/status</div>
+  <button class="btn" onclick="copy('/api/status')">Copy Endpoint</button>
+  <button class="btn" onclick="test('/api/status')">Live Test</button>
+</div>
 
-  <div id="msg" class="error"></div>
+<!-- LOGIN -->
+<div class="card">
+  <h3>Login</h3>
+
+  <form id="loginForm">
+    <input id="username" placeholder="Username" required />
+    <input id="password" type="password" placeholder="Password" required />
+    <button class="btn" type="submit">Login</button>
+  </form>
+
+  <p class="small">
+    Demo login:<br>
+    username: <b>SpiderX</b><br>
+    password: <b>123456</b>
+  </p>
+</div>
+
+<!-- API KEY -->
+<div class="card">
+  <h3>🔐 Your API Key</h3>
+  <div class="endpoint" id="apiKey">Login first</div>
+</div>
+
+<!-- ABOUT -->
+<div class="card">
+  <h3>👤 About Owner</h3>
+  <p>
+    Name: <b>SpiderX</b><br>
+    Independent developer.<br>
+    Built with logic, not templates.
+  </p>
+</div>
+
 </div>
 
 <script>
-async function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const msg = document.getElementById("msg");
-
-  msg.innerText = "Loading...";
-
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      msg.innerText = data.error || "Login failed";
-      return;
-    }
-
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("apiKey", data.apiKey);
-
-    window.location.href = "/dashboard.html";
-
-  } catch (e) {
-    msg.innerText = "Server error";
-  }
+function copy(text) {
+  navigator.clipboard.writeText(text);
+  alert("Copied!");
 }
+
+async function test(endpoint) {
+  const r = await fetch(endpoint);
+  const d = await r.json();
+  alert(JSON.stringify(d, null, 2));
+}
+
+// LOGIN LOGIC (المهم)
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = usernameInput.value = document.getElementById("username").value;
+  const password = passwordInput.value = document.getElementById("password").value;
+
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Login failed");
+    return;
+  }
+
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("apiKey", data.apiKey);
+
+  document.getElementById("apiKey").innerText = data.apiKey;
+
+  window.location.href = "/dashboard.html";
+});
 </script>
 
 </body>
