@@ -1,6 +1,8 @@
-module.exports = {
-  VALID_KEYS: [
-    "SPIDERX-KEY-123456",
-    "SPIDERX-DEV-999999"
-  ]
-};
+export const USERS = [
+  {
+    username: "spiderx",
+    apiKey: "SPIDERX-KEY-1",
+    requests: 0,
+    lastRequest: 0
+  }
+];
