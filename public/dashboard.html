@@ -1,14 +1,43 @@
 <!DOCTYPE html>
-<html>
-<body style="background:#111;color:white">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SpiderX Dashboard</title>
+<style>
+body{
+  background:#0b0f1a;
+  color:white;
+  font-family:Arial;
+  padding:20px;
+}
+button{
+  background:#ff2d55;
+  border:none;
+  padding:10px 15px;
+  color:white;
+  cursor:pointer;
+  border-radius:6px;
+}
+</style>
+</head>
+<body>
 
 <h1>SpiderX Dashboard</h1>
 <p>Your API Key:</p>
-<code id="key"></code>
+<code>SPIDERX-KEY-123456</code>
+
+<br><br>
+<button onclick="logout()">Logout</button>
 
 <script>
-document.getElementById("key").innerText =
-  localStorage.getItem("apiKey") || "No key";
+if(localStorage.getItem("logged")!=="yes"){
+  location.href="index.html";
+}
+
+function logout(){
+  localStorage.removeItem("logged");
+  location.href="index.html";
+}
 </script>
 
 </body>
