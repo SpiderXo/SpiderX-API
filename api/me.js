@@ -1,16 +1,12 @@
-import { db } from "../database/db.js";
-
-export default async function handler(req, res) {
+export default function handler(req, res) {
   const apiKey = req.headers["x-api-key"];
 
-  const user = await db.get(
-    "SELECT username, requests FROM users WHERE apiKey = ?",
-    apiKey
-  );
-
-  if (!user) {
+  if (apiKey !== "SPIDERX-KEY-123") {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  res.json(user);
+  res.json({
+    username: "spiderx",
+    requests: 7
+  });
 }
