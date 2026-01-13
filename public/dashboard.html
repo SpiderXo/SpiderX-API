@@ -1,42 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>SpiderX Dashboard</title>
-</head>
 <body>
 
 <h1>SpiderX Dashboard 🕸</h1>
-
-<p id="user"></p>
-<p id="requests"></p>
+<pre id="data"></pre>
 
 <button onclick="logout()">Logout</button>
 
 <script>
-const apiKey = localStorage.getItem("apiKey");
-
-if (!apiKey) {
-  alert("Not logged in");
-  window.location.href = "/docs.html";
-}
+const token = localStorage.getItem("token");
 
 fetch("/api/me", {
   headers: {
-    "x-api-key": apiKey
+    Authorization: "Bearer " + token
   }
 })
-.then(res => res.json())
-.then(data => {
-  document.getElementById("user").innerText =
-    "User: " + data.username;
-
-  document.getElementById("requests").innerText =
-    "Requests used: " + data.requests;
+.then(r => r.json())
+.then(d => {
+  document.getElementById("data").innerText =
+    JSON.stringify(d, null, 2);
 });
 
 function logout() {
-  localStorage.removeItem("apiKey");
-  window.location.href = "/docs.html";
+  localStorage.clear();
+  location.href = "/docs.html";
 }
 </script>
 
