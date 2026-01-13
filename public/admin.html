@@ -1,7 +1,15 @@
-// api/admin/users.js
-import { db } from "../../database/db.js";
+<h1>Admin Panel</h1>
+<pre id="users"></pre>
 
-export default async function handler(req, res) {
-  const users = await db.all("SELECT * FROM users");
-  res.json(users);
-}
+<script>
+fetch("/api/admin-users", {
+  headers: {
+    Authorization: "Bearer " + localStorage.getItem("token")
+  }
+})
+.then(r => r.json())
+.then(d => {
+  document.getElementById("users").innerText =
+    JSON.stringify(d, null, 2);
+});
+</script>
