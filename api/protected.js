@@ -1,31 +1,30 @@
-import { USERS } from "../keys.js";
+import { db } from "../database/db.js";
 
-export default function handler(req, res) {
-  const key = req.headers["x-api-key"];
-  const user = USERS.find(u => u.apiKey === key);
+export default async function handler(req, res) {
+  const apiKey = req.headers["x-api-key"];
+
+  if (!apiKey) {
+    return res.status(401).json({ error: "No API Key" });
+  }
+
+  const user = await db.get(
+    "SELECT * FROM users WHERE apiKey = ?",
+    apiKey
+  );
 
   if (!user) {
     return res.status(401).json({ error: "Invalid API Key" });
   }
 
-  const now = Date.now();
-
-  // Rate limit: 5 requests / minute
-  if (now - user.lastRequest < 60000 && user.requests >= 5) {
-    return res.status(429).json({
-      error: "Rate limit exceeded"
-    });
-  }
-
-  if (now - user.lastRequest > 60000) {
-    user.requests = 0;
-    user.lastRequest = now;
-  }
-
-  user.requests++;
+  // 🔴 هنا بنسجل الـ Request
+  await db.run(
+    "UPDATE users SET requests = requests + 1 WHERE apiKey = ?",
+    apiKey
+  );
 
   res.json({
     message: "Access granted 🕸",
-    user: user.username
+    user: user.username,
+    totalRequests: user.requests + 1
   });
 }
