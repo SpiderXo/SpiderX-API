@@ -1,42 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SpiderX Docs</title>
+  <meta charset="UTF-8">
+  <title>SpiderX API Docs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center">
 
-<h1>SpiderX API Docs 🕸</h1>
+<div class="bg-gray-900 p-8 rounded-xl w-full max-w-md shadow-lg">
+  <h1 class="text-3xl font-bold text-center text-red-500 mb-6">SpiderX API 🕸</h1>
 
-<h2>Login</h2>
+  <h2 class="text-xl mb-4 text-center">Login to Dashboard</h2>
 
-<input id="username" placeholder="username"><br><br>
-<input id="password" type="password" placeholder="password"><br><br>
+  <input id="username"
+    class="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-700"
+    placeholder="Username">
 
-<button onclick="login()">Login</button>
+  <input id="password" type="password"
+    class="w-full mb-4 p-2 rounded bg-gray-800 border border-gray-700"
+    placeholder="Password">
+
+  <button onclick="login()"
+    class="w-full bg-red-600 hover:bg-red-700 transition p-2 rounded font-bold">
+    Login
+  </button>
+
+  <p id="msg" class="text-center mt-4 text-red-400"></p>
+</div>
 
 <script>
 function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  const username = username.value;
+  const password = password.value;
 
   fetch("/api/login", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
   })
   .then(r => r.json())
   .then(d => {
     if (d.token) {
-      // ✅ هنا بنحفظ التوكن والمفتاح
       localStorage.setItem("token", d.token);
       localStorage.setItem("apiKey", d.apiKey);
-
-      // ✅ نروح على Dashboard
       location.href = "/dashboard.html";
     } else {
-      alert("Login failed");
+      msg.innerText = "Login failed";
     }
   });
 }
