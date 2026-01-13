@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SpiderX Dashboard</title>
+<style>
+body{background:#000;color:#fff;font-family:sans-serif;padding:30px}
+.card{background:#111;padding:20px;border-radius:12px}
+</style>
+</head>
+<body>
+
+<h1>🕷 SpiderX Dashboard</h1>
+
+<div class="card">
+  <p><b>Your API Key:</b></p>
+  <pre id="key">Loading...</pre>
+</div>
+
+<script>
+document.getElementById("key").innerText =
+localStorage.getItem("apiKey") || "Not logged in";
+</script>
+
+</body>
+</html>
