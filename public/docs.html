@@ -6,136 +6,65 @@
 
 <style>
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0b0f;
-  color: #fff;
+  background:#0b0f1a;
+  color:#fff;
+  font-family: Arial;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 30px;
-}
-
-h1 {
-  font-size: 46px;
-  letter-spacing: 1px;
-  text-align: center;
-  color: #ff2e63;
-  filter: drop-shadow(0 0 18px rgba(255, 46, 99, 0.25));
-}
-
-.card {
-  background: #111827;
-  border-radius: 14px;
-  padding: 20px;
-  margin-top: 25px;
-}
-
-.endpoint {
-  background: #000;
-  padding: 15px;
-  border-radius: 10px;
-  font-family: monospace;
-}
-
-.btn {
-  background: #ff2e63;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.btn:hover {
-  box-shadow: 0 0 25px rgba(255, 46, 99, 0.4);
+.box {
+  width:90%;
+  max-width:400px;
+  margin:40px auto;
+  background:#12182a;
+  padding:20px;
+  border-radius:12px;
 }
 
 input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: none;
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:6px;
+  border:none;
 }
 
-.small {
-  color: #aaa;
-  font-size: 14px;
+button {
+  width:100%;
+  padding:12px;
+  background:#ff2e63;
+  border:none;
+  border-radius:6px;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
+  <h2>Login</h2>
 
-<h1>SpiderX API Documentation 🕸</h1>
-
-<!-- API STATUS -->
-<div class="card">
-  <h3>GET /api/status</h3>
-  <div class="endpoint">/api/status</div>
-  <button class="btn" onclick="copy('/api/status')">Copy Endpoint</button>
-  <button class="btn" onclick="test('/api/status')">Live Test</button>
-</div>
-
-<!-- LOGIN -->
-<div class="card">
-  <h3>Login</h3>
-
+  <!-- ⚠️ مفيش action -->
   <form id="loginForm">
-    <input id="username" placeholder="Username" required />
-    <input id="password" type="password" placeholder="Password" required />
-    <button class="btn" type="submit">Login</button>
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button type="submit">Login</button>
   </form>
 
-  <p class="small">
-    Demo login:<br>
-    username: <b>SpiderX</b><br>
-    password: <b>123456</b>
-  </p>
-</div>
-
-<!-- API KEY -->
-<div class="card">
-  <h3>🔐 Your API Key</h3>
-  <div class="endpoint" id="apiKey">Login first</div>
-</div>
-
-<!-- ABOUT -->
-<div class="card">
-  <h3>👤 About Owner</h3>
-  <p>
-    Name: <b>SpiderX</b><br>
-    Independent developer.<br>
-    Built with logic, not templates.
-  </p>
-</div>
-
+  <p id="msg"></p>
 </div>
 
 <script>
-function copy(text) {
-  navigator.clipboard.writeText(text);
-  alert("Copied!");
-}
+console.log("JS Loaded ✅");
 
-async function test(endpoint) {
-  const r = await fetch(endpoint);
-  const d = await r.json();
-  alert(JSON.stringify(d, null, 2));
-}
-
-// LOGIN LOGIC (المهم)
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+document.getElementById("loginForm").addEventListener("submit", async function(e){
   e.preventDefault();
+  console.log("Login clicked");
 
-  const username = usernameInput.value = document.getElementById("username").value;
-  const password = passwordInput.value = document.getElementById("password").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
   const res = await fetch("/api/login", {
     method: "POST",
@@ -144,16 +73,15 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   });
 
   const data = await res.json();
+  console.log(data);
 
   if (!res.ok) {
-    alert(data.error || "Login failed");
+    document.getElementById("msg").innerText = data.error;
     return;
   }
 
   localStorage.setItem("token", data.token);
   localStorage.setItem("apiKey", data.apiKey);
-
-  document.getElementById("apiKey").innerText = data.apiKey;
 
   window.location.href = "/dashboard.html";
 });
