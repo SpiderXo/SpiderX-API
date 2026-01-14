@@ -1,4 +1,4 @@
-import { db } from "../lib/db.js";
+import db from "../lib/db.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const apiKey = req.headers.authorization;
 
   if (!apiKey) {
-    return res.status(401).json({ error: "Missing API key" });
+    return res.status(401).json({ error: "No API key" });
   }
 
   const user = await db.get(
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   const logs = await db.all(
-    "SELECT endpoint, createdAt FROM requests WHERE userId = ? ORDER BY id DESC LIMIT 10",
+    "SELECT endpoint, createdAt FROM logs WHERE userId = ? ORDER BY createdAt DESC LIMIT 5",
     user.id
   );
 
