@@ -13,35 +13,35 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 60px auto;
   padding: 30px;
-}
-
-.card {
-  background: rgba(255,255,255,0.03);
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 0 40px rgba(255,46,99,0.15);
 }
 
 h1 {
   font-size: 46px;
   letter-spacing: 1px;
-  margin-bottom: 20px;
   filter: drop-shadow(0 0 18px rgba(255,46,99,0.25));
+}
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 0 40px rgba(255,46,99,0.18);
+  margin-top: 30px;
 }
 
 .label {
   opacity: 0.7;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
-.key-box {
+.box {
   background: #020617;
-  padding: 14px;
+  padding: 12px;
   border-radius: 10px;
-  margin-top: 8px;
+  margin-top: 6px;
   font-family: monospace;
 }
 
@@ -49,7 +49,7 @@ button {
   margin-top: 25px;
   background: linear-gradient(135deg, #ff2e63, #ff5f9e);
   border: none;
-  padding: 12px 25px;
+  padding: 12px 30px;
   border-radius: 10px;
   color: white;
   font-size: 16px;
@@ -57,27 +57,40 @@ button {
 }
 
 button:hover {
-  box-shadow: 0 0 25px rgba(255, 46, 99, 0.4);
+  box-shadow: 0 0 25px rgba(255,46,99,0.4);
+}
+
+ul {
+  margin-top: 15px;
+  padding-left: 20px;
+}
+
+li {
+  opacity: 0.85;
+  margin-bottom: 6px;
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>SpiderX Dashboard</h1>
+  <h1>🕷 SpiderX Dashboard</h1>
 
   <div class="card">
     <div class="label">Username</div>
-    <div id="username" class="key-box">Loading...</div>
+    <div id="username" class="box">Loading...</div>
 
-    <div class="label">Your API Key</div>
-    <div id="apiKey" class="key-box">Loading...</div>
+    <div class="label">API Key</div>
+    <div id="apiKey" class="box">Loading...</div>
 
     <div class="label">Plan</div>
-    <div id="plan" class="key-box">Loading...</div>
+    <div id="plan" class="box">Loading...</div>
 
     <div class="label">Requests Used</div>
-    <div id="requests" class="key-box">Loading...</div>
+    <div id="requests" class="box">Loading...</div>
+
+    <div class="label">Recent Requests</div>
+    <ul id="logs"></ul>
 
     <button onclick="logout()">Logout</button>
   </div>
@@ -92,7 +105,7 @@ if (!apiKey) {
 
 fetch("/api/me", {
   headers: {
-    "x-api-key": apiKey
+    "Authorization": apiKey
   }
 })
 .then(res => res.json())
@@ -107,11 +120,19 @@ fetch("/api/me", {
   document.getElementById("apiKey").textContent = data.apiKey;
   document.getElementById("plan").textContent = data.plan;
   document.getElementById("requests").textContent = data.requests;
+
+  const logs = document.getElementById("logs");
+  logs.innerHTML = "";
+
+  data.logs.forEach(l => {
+    const li = document.createElement("li");
+    li.textContent = `${l.endpoint} — ${l.createdAt}`;
+    logs.appendChild(li);
+  });
 });
 
 function logout() {
   localStorage.removeItem("apiKey");
-  localStorage.removeItem("token");
   location.href = "/";
 }
 </script>
