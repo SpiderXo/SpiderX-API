@@ -1,24 +1,31 @@
 import { db } from "../lib/db.js";
 
 export default async function handler(req, res) {
-  try {
-    const apiKey = req.headers["x-api-key"];
+  const token = req.headers.authorization;
 
-    if (!apiKey) {
-      return res.status(401).json({ error: "API key missing" });
-    }
-
-    const user = await db.get(
-      "SELECT username, apiKey, plan, requests FROM users WHERE apiKey = ?",
-      apiKey
-    );
-
-    if (!user) {
-      return res.status(401).json({ error: "Invalid API key" });
-    }
-
-    return res.status(200).json(user);
-  } catch (err) {
-    return res.status(500).json({ error: "Server error" });
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
+
+  const user = await db.get(
+    "SELECT * FROM users WHERE apiKey = ?",
+    token
+  );
+
+  if (!user) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+
+  const logs = await db.all(
+    "SELECT endpoint, createdAt FROM requests WHERE userId = ? ORDER BY id DESC LIMIT 20",
+    user.id
+  );
+
+  res.json({
+    username: user.username,
+    apiKey: user.apiKey,
+    plan: user.plan,
+    requests: user.requests,
+    logs
+  });
 }
