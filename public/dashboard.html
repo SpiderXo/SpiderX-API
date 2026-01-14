@@ -1,140 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>SpiderX Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpiderX Dashboard</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: radial-gradient(circle at top, #0f172a, #020617);
-  color: white;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
 
-.container {
-  max-width: 1000px;
-  margin: 60px auto;
-  padding: 30px;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-h1 {
-  font-size: 46px;
-  letter-spacing: 1px;
-  filter: drop-shadow(0 0 18px rgba(255,46,99,0.25));
-}
+    .card {
+      width: 95%;
+      max-width: 480px;
+      background: linear-gradient(180deg, #020617, #020617cc);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 0 40px #000;
+      border: 1px solid #1e293b;
+    }
 
-.card {
-  background: rgba(255,255,255,0.04);
-  border-radius: 18px;
-  padding: 25px;
-  box-shadow: 0 0 40px rgba(255,46,99,0.18);
-  margin-top: 30px;
-}
+    h1 {
+      margin: 0 0 20px;
+      text-align: center;
+      font-size: 26px;
+    }
 
-.label {
-  opacity: 0.7;
-  margin-top: 15px;
-}
+    .field {
+      margin-bottom: 14px;
+    }
 
-.box {
-  background: #020617;
-  padding: 12px;
-  border-radius: 10px;
-  margin-top: 6px;
-  font-family: monospace;
-}
+    .label {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
 
-button {
-  margin-top: 25px;
-  background: linear-gradient(135deg, #ff2e63, #ff5f9e);
-  border: none;
-  padding: 12px 30px;
-  border-radius: 10px;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
+    .value {
+      background: #020617;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+      font-size: 14px;
+      overflow-wrap: break-word;
+    }
 
-button:hover {
-  box-shadow: 0 0 25px rgba(255,46,99,0.4);
-}
+    ul {
+      padding-left: 18px;
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: #cbd5f5;
+    }
 
-ul {
-  margin-top: 15px;
-  padding-left: 20px;
-}
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
-li {
-  opacity: 0.85;
-  margin-bottom: 6px;
-}
-</style>
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>SpiderX Dashboard 🕸</h1>
 
   <div class="card">
-    <div class="label">Username</div>
-    <div id="username" class="box">Loading...</div>
+    <h1>SpiderX Dashboard 🕸</h1>
 
-    <div class="label">API Key</div>
-    <div id="apiKey" class="box">Loading...</div>
+    <div class="field">
+      <div class="label">Username</div>
+      <div class="value" id="username">Loading...</div>
+    </div>
 
-    <div class="label">Plan</div>
-    <div id="plan" class="box">Loading...</div>
+    <div class="field">
+      <div class="label">API Key</div>
+      <div class="value" id="apiKey">Loading...</div>
+    </div>
 
-    <div class="label">Requests Used</div>
-    <div id="requests" class="box">Loading...</div>
+    <div class="field">
+      <div class="label">Plan</div>
+      <div class="value" id="plan">Loading...</div>
+    </div>
 
-    <div class="label">Recent Requests</div>
-    <ul id="logs"></ul>
+    <div class="field">
+      <div class="label">Requests Used</div>
+      <div class="value" id="requests">Loading...</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Recent Requests</div>
+      <ul id="logs"></ul>
+    </div>
 
     <button onclick="logout()">Logout</button>
   </div>
-</div>
 
-<script>
-const apiKey = localStorage.getItem("apiKey");
+  <script>
+    const apiKey = localStorage.getItem("apiKey");
 
-if (!apiKey) {
-  location.href = "/";
-}
+    if (!apiKey) {
+      location.href = "/";
+    }
 
-fetch("/api/me", {
-  headers: {
-    "Authorization": apiKey
-  }
-})
-.then(res => res.json())
-.then(data => {
-  if (data.error) {
-    alert("Session expired");
-    logout();
-    return;
-  }
+    fetch("/api/me", {
+      headers: {
+        Authorization: apiKey
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
 
-  document.getElementById("username").textContent = data.username;
-  document.getElementById("apiKey").textContent = data.apiKey;
-  document.getElementById("plan").textContent = data.plan;
-  document.getElementById("requests").textContent = data.requests;
+        document.getElementById("username").innerText = data.username;
+        document.getElementById("apiKey").innerText = data.apiKey;
+        document.getElementById("plan").innerText = data.plan;
+        document.getElementById("requests").innerText = data.requests;
 
-  const logs = document.getElementById("logs");
-  logs.innerHTML = "";
+        const logs = document.getElementById("logs");
+        logs.innerHTML = "";
 
-  data.logs.forEach(l => {
-    const li = document.createElement("li");
-    li.textContent = `${l.endpoint} — ${l.createdAt}`;
-    logs.appendChild(li);
-  });
-});
+        if (data.logs.length === 0) {
+          logs.innerHTML = "<li>No requests yet</li>";
+        }
 
-function logout() {
-  localStorage.removeItem("apiKey");
-  location.href = "/";
-}
-</script>
+        data.logs.forEach(log => {
+          const li = document.createElement("li");
+          li.innerText = `${log.endpoint} — ${new Date(log.createdAt).toLocaleString()}`;
+          logs.appendChild(li);
+        });
+      });
+
+    function logout() {
+      localStorage.removeItem("apiKey");
+      location.href = "/";
+    }
+  </script>
+
 </body>
 </html>
