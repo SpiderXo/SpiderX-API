@@ -1,1 +1,153 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SpiderX Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #140018, #02010a 80%);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 25px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #ff2e63;
+      letter-spacing: 2px;
+    }
+
+    header button {
+      background: linear-gradient(135deg, #ff2e63, #7b2cff);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .card {
+      max-width: 900px;
+      margin: 40px auto;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,46,99,0.2);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 40px rgba(255,46,99,0.08);
+    }
+
+    .row {
+      margin-bottom: 20px;
+    }
+
+    .label {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      background: #05030f;
+      border-radius: 12px;
+      padding: 14px;
+      color: #9cfffa;
+      font-size: 14px;
+    }
+
+    .value.loading {
+      color: #555;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SpiderX Dashboard 🕸</h1>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<div class="card">
+  <div class="row">
+    <div class="label">Username</div>
+    <div class="value loading" id="username">Loading...</div>
+  </div>
+
+  <div class="row">
+    <div class="label">API Key</div>
+    <div class="value loading" id="apikey">Loading...</div>
+  </div>
+
+  <div class="row">
+    <div class="label">Plan</div>
+    <div class="value loading" id="plan">Loading...</div>
+  </div>
+
+  <div class="row">
+    <div class="label">Requests Used</div>
+    <div class="value loading" id="requests">Loading...</div>
+  </div>
+</div>
+
+<footer>
+  © 2026 SpiderX API — Dashboard
+</footer>
+
+<script>
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    location.href = "/site/";
+  }
+
+  fetch("/api/me", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Unauthorized");
+    return res.json();
+  })
+  .then(user => {
+    document.getElementById("username").innerText = user.username;
+    document.getElementById("apikey").innerText = user.apiKey;
+    document.getElementById("plan").innerText = user.plan.toUpperCase();
+    document.getElementById("requests").innerText = user.requests;
+  })
+  .catch(() => {
+    localStorage.clear();
+    location.href = "/site/";
+  });
+
+  function logout() {
+    localStorage.clear();
+    location.href = "/site/";
+  }
+</script>
+
+</body>
+</html>
