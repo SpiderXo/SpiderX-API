@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spider Host Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
+
+  <style>
+    body {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 230px;
+      background: #05010a;
+      border-right: 1px solid rgba(255,46,99,0.15);
+      padding: 25px;
+      height: 100vh;
+    }
+
+    .sidebar h2 {
+      color: #ff2e63;
+      margin-bottom: 30px;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .menu a {
+      display: block;
+      padding: 12px;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: 0.3s;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+      background: rgba(255,46,99,0.15);
+      color: #fff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .topbar h1 {
+      font-size: 22px;
+      color: #fff;
+    }
+
+    .logout {
+      background: linear-gradient(135deg, #ff2e63, #7b2cff);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,46,99,0.2);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 35px rgba(255,46,99,0.08);
+    }
+
+    .card h3 {
+      font-size: 15px;
+      margin-bottom: 10px;
+      color: #ff2e63;
+    }
+
+    .card span {
+      font-size: 26px;
+      color: #9cfffa;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Spider Host 🕸</h2>
+  <div class="menu">
+    <a class="active">Dashboard</a>
+    <a>Servers</a>
+    <a>Files</a>
+    <a>Logs</a>
+    <a>Domains</a>
+  </div>
+</div>
+
+<div class="content">
+  <div class="topbar">
+    <h1>Control Panel</h1>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Active Servers</h3>
+      <span>0</span>
+    </div>
+
+    <div class="card">
+      <h3>CPU Usage</h3>
+      <span>0%</span>
+    </div>
+
+    <div class="card">
+      <h3>RAM Usage</h3>
+      <span>0 MB</span>
+    </div>
+
+    <div class="card">
+      <h3>Status</h3>
+      <span>Idle</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem("host_token");
+  if (!token) location.href = "/host/";
+
+  function logout() {
+    localStorage.removeItem("host_token");
+    location.href = "/host/";
+  }
+</script>
+
+</body>
+</html>
