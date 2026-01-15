@@ -1,1 +1,174 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SpiderX API Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #140018, #02010a 75%);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 30px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #ff2e63;
+      letter-spacing: 2px;
+    }
+
+    header a {
+      color: #bbb;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    header a:hover {
+      color: #ff2e63;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .endpoint {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,46,99,0.2);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .endpoint h3 {
+      color: #ff2e63;
+      margin-bottom: 10px;
+    }
+
+    code {
+      display: block;
+      background: #05030f;
+      padding: 12px;
+      border-radius: 8px;
+      color: #9cfffa;
+      font-size: 13px;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .copy {
+      margin-top: 10px;
+      background: linear-gradient(135deg, #ff2e63, #7b2cff);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SpiderX API 🕸</h1>
+  <nav>
+    <a href="/site/">Home</a>
+    <a href="/dashboard/">Dashboard</a>
+    <a href="/host/">Spider Host</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>API Documentation</h2>
+  <p>
+    Welcome to SpiderX API.  
+    Secure, fast, personal endpoints built for bots and automation.
+  </p>
+
+  <div class="endpoint">
+    <h3>GET /api/me</h3>
+    <p>Get current user information.</p>
+    <code>
+curl https://x-api.vercel.app/api/me \
+-H "Authorization: Bearer YOUR_TOKEN"
+    </code>
+    <button class="copy" onclick="copyText(this)">Copy</button>
+  </div>
+
+  <div class="endpoint">
+    <h3>POST /api/login</h3>
+    <p>Login and receive token + apiKey.</p>
+    <code>
+fetch("/api/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    username: "user",
+    password: "pass"
+  })
+});
+    </code>
+    <button class="copy" onclick="copyText(this)">Copy</button>
+  </div>
+
+  <div class="endpoint">
+    <h3>Rate Limits</h3>
+    <p>
+      Free Plan: 100 requests/day  
+      Paid Plan: Unlimited
+    </p>
+  </div>
+</div>
+
+<footer>
+  © 2026 SpiderX API — Docs
+</footer>
+
+<script>
+  function copyText(btn) {
+    const code = btn.previousElementSibling.innerText;
+    navigator.clipboard.writeText(code);
+    btn.innerText = "Copied!";
+    setTimeout(() => btn.innerText = "Copy", 1500);
+  }
+</script>
+
+</body>
+</html>
