@@ -1,167 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SpiderX Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>SpiderX Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #180021, #040006);
+  color: #fff;
+  display: flex;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Orbitron', sans-serif;
-    }
+aside {
+  width: 240px;
+  background: #0b0015;
+  padding: 20px;
+  box-shadow: inset -1px 0 0 #2b0040;
+}
 
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #120014, #04010a 85%);
-      color: #fff;
-      display: flex;
-      min-height: 100vh;
-    }
+aside h2 {
+  color: #ff2f92;
+  margin-bottom: 30px;
+}
 
-    .sidebar {
-      width: 240px;
-      background: #05010a;
-      border-right: 1px solid rgba(255,46,99,0.2);
-      padding: 30px;
-    }
+aside a {
+  display: block;
+  color: #aaa;
+  text-decoration: none;
+  margin: 14px 0;
+  cursor: pointer;
+}
 
-    .sidebar h2 {
-      color: #ff2e63;
-      margin-bottom: 40px;
-      letter-spacing: 2px;
-      font-size: 18px;
-    }
+aside a.active {
+  color: #ff2f92;
+}
 
-    .sidebar a {
-      display: block;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      text-decoration: none;
-      color: #aaa;
-      border-radius: 14px;
-      transition: 0.3s;
-    }
+main {
+  flex: 1;
+  padding: 30px;
+}
 
-    .sidebar a:hover,
-    .sidebar a.active {
-      background: rgba(255,46,99,0.15);
-      color: #fff;
-    }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .content {
-      flex: 1;
-      padding: 35px;
-    }
+button {
+  background: linear-gradient(90deg,#ff2f92,#9b5cff);
+  border: none;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 35px;
-    }
+.card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 25px rgba(255,0,140,0.18);
+}
 
-    .topbar h1 {
-      font-size: 22px;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 15px;
+}
 
-    .logout {
-      background: linear-gradient(135deg, #ff2e63, #7b2cff);
-      border: none;
-      padding: 10px 22px;
-      border-radius: 22px;
-      color: #fff;
-      cursor: pointer;
-    }
+input {
+  width: 100%;
+  padding: 10px;
+  background: #14001f;
+  border: 1px solid #2b0040;
+  color: #fff;
+  border-radius: 8px;
+  margin-top: 10px;
+}
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,46,99,0.2);
-      border-radius: 22px;
-      padding: 30px;
-      box-shadow: 0 0 40px rgba(255,46,99,0.08);
-    }
-
-    .card h3 {
-      font-size: 14px;
-      color: #ff2e63;
-      margin-bottom: 10px;
-    }
-
-    .card span {
-      font-size: 28px;
-      color: #9cfffa;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 12px;
-      color: #444;
-    }
-  </style>
+.small {
+  color: #aaa;
+  font-size: 13px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="sidebar">
-  <h2>SpiderX Admin 🕸</h2>
-  <a class="active">Dashboard</a>
+<aside>
+  <h2>SpiderX Admin</h2>
+  <a class="active">Overview</a>
   <a>Users</a>
   <a>Servers</a>
-  <a>Requests</a>
+  <a>Logs</a>
   <a>Security</a>
+</aside>
+
+<main>
+
+<div class="header">
+  <h1>Admin Control</h1>
+  <button onclick="logout()">Logout</button>
 </div>
 
-<div class="content">
-  <div class="topbar">
-    <h1>Admin Control Panel</h1>
-    <button class="logout" onclick="logout()">Logout</button>
+<div class="grid">
+
+  <div class="card">
+    <h3>Total Users</h3>
+    <p id="users">0</p>
   </div>
 
-  <div class="cards">
-    <div class="card">
-      <h3>Total Users</h3>
-      <span>0</span>
-    </div>
-
-    <div class="card">
-      <h3>Active Servers</h3>
-      <span>0</span>
-    </div>
-
-    <div class="card">
-      <h3>Total Requests</h3>
-      <span>0</span>
-    </div>
-
-    <div class="card">
-      <h3>System Status</h3>
-      <span>Online</span>
-    </div>
+  <div class="card">
+    <h3>Total Servers</h3>
+    <p>0</p>
   </div>
 
-  <footer>
-    © 2026 SpiderX — Admin Panel
-  </footer>
+  <div class="card">
+    <h3>API Requests</h3>
+    <p>0</p>
+  </div>
+
+  <div class="card">
+    <h3>Status</h3>
+    <p style="color:#00ff9c;">Stable</p>
+  </div>
+
 </div>
+
+<div class="card">
+  <h2>Create User</h2>
+  <input id="newUser" placeholder="Username">
+  <input id="newPass" placeholder="Password">
+  <button onclick="createUser()">Create</button>
+  <p class="small">Admin only – instant access</p>
+</div>
+
+<div class="card">
+  <h2>System Logs</h2>
+  <p class="small">No logs yet</p>
+</div>
+
+</main>
 
 <script>
-  const adminToken = localStorage.getItem("admin_token");
-  if (!adminToken) location.href = "/site/";
+const token = localStorage.getItem("token");
+if (!token) location.href = "/host";
 
-  function logout() {
-    localStorage.removeItem("admin_token");
-    location.href = "/site/";
-  }
+fetch("/api/users/me", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(r => r.json())
+.then(d => {
+  if (!d.admin) throw "";
+})
+.catch(() => {
+  localStorage.clear();
+  location.href = "/host";
+});
+
+function logout() {
+  localStorage.clear();
+  location.href = "/host";
+}
+
+function createUser() {
+  alert("User creation will be connected to backend");
+}
 </script>
 
 </body>
-</html>
+  </html>
