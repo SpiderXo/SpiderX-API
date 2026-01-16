@@ -1,128 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SpiderX Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #1a002a, #050008);
-      color: #fff;
-      display: flex;
-    }
+<meta charset="UTF-8">
+<title>SpiderX Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    aside {
-      width: 230px;
-      background: #0b0015;
-      padding: 20px;
-      box-shadow: inset -1px 0 0 #2b0040;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #1a002a, #050008);
+  color: #fff;
+  display: flex;
+}
 
-    aside h2 {
-      color: #ff2f92;
-      margin-bottom: 30px;
-    }
+aside {
+  width: 230px;
+  background: #0b0015;
+  padding: 20px;
+}
 
-    aside a {
-      display: block;
-      color: #bbb;
-      text-decoration: none;
-      margin: 12px 0;
-    }
+aside h2 {
+  color: #ff2f92;
+}
 
-    aside a.active {
-      color: #ff2f92;
-    }
+aside a {
+  display: block;
+  color: #aaa;
+  margin: 12px 0;
+  text-decoration: none;
+}
 
-    main {
-      flex: 1;
-      padding: 40px;
-    }
+aside a.active {
+  color: #ff2f92;
+}
 
-    .card {
-      background: rgba(255,255,255,0.04);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(255,0,140,0.15);
-    }
+main {
+  flex: 1;
+  padding: 30px;
+}
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-      gap: 15px;
-    }
+.card {
+  background: rgba(255,255,255,0.04);
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(255,0,140,0.15);
+}
 
-    button {
-      background: linear-gradient(90deg,#ff2f92,#9b5cff);
-      border: none;
-      color: #000;
-      padding: 12px 20px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-  </style>
+button {
+  background: linear-gradient(90deg,#ff2f92,#9b5cff);
+  border: none;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+input {
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  margin-right: 5px;
+}
+</style>
 </head>
+
 <body>
 
 <aside>
   <h2>SpiderX 🕸</h2>
-  <a class="active">Dashboard</a>
-  <a>Servers</a>
-  <a>Files</a>
-  <a>Logs</a>
-  <a>Domains</a>
+  <a class="active">Servers</a>
 </aside>
 
 <main>
-  <h1>Control Panel</h1>
 
-  <div class="card">
-    <button onclick="logout()">Logout</button>
-  </div>
+<h1>Servers</h1>
 
-  <div class="stats">
-    <div class="card">
-      <h3>Active Servers</h3>
-      <p>0</p>
-    </div>
-    <div class="card">
-      <h3>CPU Usage</h3>
-      <p>0%</p>
-    </div>
-    <div class="card">
-      <h3>RAM Usage</h3>
-      <p>0 MB</p>
-    </div>
-    <div class="card">
-      <h3>Status</h3>
-      <p>Idle</p>
-    </div>
-  </div>
+<div class="card">
+  <input id="serverName" placeholder="Server name">
+  <button onclick="createServer()">Create Server</button>
+</div>
+
+<div id="servers"></div>
+
 </main>
 
 <script>
 const token = localStorage.getItem("token");
 if (!token) location.href = "/host";
 
-fetch("/api/users/me", {
-  headers: { Authorization: "Bearer " + token }
-})
-.then(r => {
-  if (!r.ok) throw new Error();
-})
-.catch(() => {
-  localStorage.clear();
-  location.href = "/host";
-});
-
-function logout() {
-  localStorage.clear();
-  location.href = "/host";
+function api(path, body) {
+  return fetch(path, {
+    method: body ? "POST" : "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: body ? JSON.stringify(body) : null
+  }).then(r => r.json());
 }
+
+function loadServers() {
+  api("/api/servers/list").then(servers => {
+    const el = document.getElementById("servers");
+    el.innerHTML = "";
+
+    if (!servers.length) {
+      el.innerHTML = "<p>No servers yet</p>";
+      return;
+    }
+
+    servers.forEach(s => {
+      el.innerHTML += `
+        <div class="card">
+          <h3>${s.name}</h3>
+          <p>Status: <b>${s.status}</b></p>
+          <button onclick="startServer('${s.id}')">Start</button>
+          <button onclick="stopServer('${s.id}')">Stop</button>
+          <button onclick="viewLogs('${s.id}')">Logs</button>
+        </div>
+      `;
+    });
+  });
+}
+
+function createServer() {
+  const name = serverName.value;
+  if (!name) return;
+
+  api("/api/servers/create", { name }).then(loadServers);
+  serverName.value = "";
+}
+
+function startServer(id) {
+  api("/api/servers/start", { id }).then(loadServers);
+}
+
+function stopServer(id) {
+  api("/api/servers/stop", { id }).then(loadServers);
+}
+
+function viewLogs(id) {
+  api("/api/servers/logs?id=" + id).then(logs => {
+    alert(logs.join("\n") || "No logs");
+  });
+}
+
+loadServers();
 </script>
 
 </body>
