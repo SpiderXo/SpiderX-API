@@ -1,18 +1,20 @@
 import jwt from "jsonwebtoken";
 
-const SECRET = "SPIDERX_SECRET";
-
-export function createToken(user) {
+export function sign(user) {
   return jwt.sign(
-    { id: user.id, username: user.username },
-    SECRET,
-    { expiresIn: "7d" }
+    { username: user.username, admin: user.admin },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
   );
 }
 
-export function verifyToken(token) {
+export function verify(req) {
+  const auth = req.headers.authorization;
+  if (!auth) return null;
+
+  const token = auth.split(" ")[1];
   try {
-    return jwt.verify(token, SECRET);
+    return jwt.verify(token, process.env.JWT_SECRET);
   } catch {
     return null;
   }
