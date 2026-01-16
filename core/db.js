@@ -1,10 +1,15 @@
-export const users = [
+let users = [
   {
-    id: 1,
-    username: "SpiderXDev",
-    password: "spiderxishere7",
-    apiKey: "SPIDERX-KEY-DEV-001",
-    plan: "free",
-    requests: 0
+    username: process.env.SPIDERX_USERNAME,
+    password: process.env.SPIDERX_PASSWORD,
+    admin: true
   }
 ];
+
+export function getUser(username) {
+  return users.find(u => u.username === username);
+}
+
+export function createUser(user) {
+  users.push(user);
+}
