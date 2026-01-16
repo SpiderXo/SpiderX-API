@@ -1,12 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const USER = {
-  username: "SpiderXDev",
-  passwordHash: bcrypt.hashSync("spiderxishere7", 10)
-};
-
-const JWT_SECRET = "SPIDERX_SECRET_KEY";
+const USERNAME = process.env.SPIDERX_USERNAME;
+const PASSWORD_HASH = bcrypt.hashSync(
+  process.env.SPIDERX_PASSWORD,
+  10
+);
 
 export default function handler(req, res) {
   if (req.method !== "POST") {
@@ -16,15 +15,15 @@ export default function handler(req, res) {
   const { username, password } = req.body || {};
 
   if (
-    username !== USER.username ||
-    !bcrypt.compareSync(password, USER.passwordHash)
+    username !== USERNAME ||
+    !bcrypt.compareSync(password, PASSWORD_HASH)
   ) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
   const token = jwt.sign(
     { username },
-    JWT_SECRET,
+    process.env.JWT_SECRET,
     { expiresIn: "1d" }
   );
 
