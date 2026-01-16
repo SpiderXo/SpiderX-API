@@ -2,46 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spider Host — Login</title>
+  <title>Spider Host Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #1a002a, #050008);
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
-  <link href="assets/style.css" rel="stylesheet">
+    .box {
+      background: rgba(255,255,255,0.04);
+      padding: 40px;
+      border-radius: 18px;
+      width: 320px;
+      box-shadow: 0 0 40px rgba(255,0,140,0.25);
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff2f92;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #14001f;
+      border: 1px solid #2b0040;
+      color: white;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 30px;
+      border: none;
+      background: linear-gradient(90deg,#ff2f92,#9b5cff);
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="login-box">
-  <img src="/site/assets/logo.png" class="logo">
-
+<div class="box">
   <h1>Spider Host 🕸</h1>
-  <p>Private Hosting Platform</p>
-
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
-
-  <span class="note">Access by approval only</span>
 </div>
 
 <script>
 function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
   fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({
+      username: username.value,
+      password: password.value
+    })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.token) {
-      localStorage.setItem("host_token", data.token);
-      location.href = "/host/panel.html";
-    } else {
-      alert("Access denied");
-    }
+  .then(r => r.json())
+  .then(d => {
+    if (!d.token) return alert("Invalid login");
+    localStorage.setItem("token", d.token);
+    localStorage.setItem("apiKey", d.apiKey);
+    location.href = "/dashboard";
   });
 }
 </script>
