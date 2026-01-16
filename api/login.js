@@ -1,22 +1,35 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { db } from "../../core/db.js";
-import { SECRET } from "../../core/auth.js";
 
-export function login(req, res) {
-  const { username, password } = req.body;
+const USER = {
+  username: "SpiderXDev",
+  passwordHash: bcrypt.hashSync("spiderxishere7", 10)
+};
 
-  db.get(
-    "SELECT * FROM users WHERE username = ?",
-    [username],
-    async (err, user) => {
-      if (!user) return res.status(401).json({ error: "Invalid credentials" });
+const JWT_SECRET = "SPIDERX_SECRET_KEY";
 
-      const ok = await bcrypt.compare(password, user.password);
-      if (!ok) return res.status(401).json({ error: "Invalid credentials" });
+export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
 
-      const token = jwt.sign({ id: user.id }, SECRET);
-      res.json({ token, apiKey: user.apiKey });
-    }
+  const { username, password } = req.body || {};
+
+  if (
+    username !== USER.username ||
+    !bcrypt.compareSync(password, USER.passwordHash)
+  ) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  const token = jwt.sign(
+    { username },
+    JWT_SECRET,
+    { expiresIn: "1d" }
   );
+
+  res.json({
+    message: "Login successful",
+    token
+  });
 }
