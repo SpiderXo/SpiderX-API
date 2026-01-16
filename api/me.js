@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "SPIDERX_SECRET_KEY";
-
 export default function handler(req, res) {
   const auth = req.headers.authorization;
 
@@ -9,10 +7,9 @@ export default function handler(req, res) {
     return res.status(401).json({ error: "No token provided" });
   }
 
-  const token = auth.split(" ")[1];
-
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const token = auth.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     res.json({
       username: decoded.username,
