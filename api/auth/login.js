@@ -1,22 +1,25 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { db } from "../../core/db.js";
-import { SECRET } from "../../core/auth.js";
+import { users } from "../../core/db.js";
+import { createToken } from "../../core/auth.js";
 
-export function login(req, res) {
+export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   const { username, password } = req.body;
 
-  db.get(
-    "SELECT * FROM users WHERE username = ?",
-    [username],
-    async (err, user) => {
-      if (!user) return res.status(401).json({ error: "Invalid credentials" });
-
-      const ok = await bcrypt.compare(password, user.password);
-      if (!ok) return res.status(401).json({ error: "Invalid credentials" });
-
-      const token = jwt.sign({ id: user.id }, SECRET);
-      res.json({ token, apiKey: user.apiKey });
-    }
+  const user = users.find(
+    u => u.username === username && u.password === password
   );
+
+  if (!user) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  const token = createToken(user);
+
+  return res.json({
+    token,
+    apiKey: user.apiKey
+  });
 }
