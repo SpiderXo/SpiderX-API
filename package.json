@@ -1,15 +1,15 @@
-
 {
-  "name": "spiderx-backend",
+  "name": "spiderx",
   "version": "1.0.0",
+  "description": "SpiderX Platform & API",
   "type": "module",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'",
+    "start": "vercel dev"
   },
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "sqlite3": "^5.1.7"
+    "bcryptjs": "^2.4.3"
   }
 }
