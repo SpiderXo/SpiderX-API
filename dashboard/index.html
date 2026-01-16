@@ -1,152 +1,128 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SpiderX Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Orbitron', sans-serif;
-    }
-
     body {
       margin: 0;
-      background: radial-gradient(circle at top, #140018, #02010a 80%);
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #1a002a, #050008);
       color: #fff;
-      min-height: 100vh;
-    }
-
-    header {
-      padding: 25px 40px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    header h1 {
-      color: #ff2e63;
-      letter-spacing: 2px;
+    aside {
+      width: 230px;
+      background: #0b0015;
+      padding: 20px;
+      box-shadow: inset -1px 0 0 #2b0040;
     }
 
-    header button {
-      background: linear-gradient(135deg, #ff2e63, #7b2cff);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      color: #fff;
-      cursor: pointer;
+    aside h2 {
+      color: #ff2f92;
+      margin-bottom: 30px;
+    }
+
+    aside a {
+      display: block;
+      color: #bbb;
+      text-decoration: none;
+      margin: 12px 0;
+    }
+
+    aside a.active {
+      color: #ff2f92;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px;
     }
 
     .card {
-      max-width: 900px;
-      margin: 40px auto;
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,46,99,0.2);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 0 40px rgba(255,46,99,0.08);
-    }
-
-    .row {
-      margin-bottom: 20px;
-    }
-
-    .label {
-      font-size: 13px;
-      color: #aaa;
-      margin-bottom: 6px;
-    }
-
-    .value {
-      background: #05030f;
-      border-radius: 12px;
-      padding: 14px;
-      color: #9cfffa;
-      font-size: 14px;
-    }
-
-    .value.loading {
-      color: #555;
-    }
-
-    footer {
-      text-align: center;
+      border-radius: 14px;
       padding: 20px;
-      font-size: 12px;
-      color: #444;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(255,0,140,0.15);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+      gap: 15px;
+    }
+
+    button {
+      background: linear-gradient(90deg,#ff2f92,#9b5cff);
+      border: none;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>SpiderX Dashboard 🕸</h1>
-  <button onclick="logout()">Logout</button>
-</header>
+<aside>
+  <h2>SpiderX 🕸</h2>
+  <a class="active">Dashboard</a>
+  <a>Servers</a>
+  <a>Files</a>
+  <a>Logs</a>
+  <a>Domains</a>
+</aside>
 
-<div class="card">
-  <div class="row">
-    <div class="label">Username</div>
-    <div class="value loading" id="username">Loading...</div>
+<main>
+  <h1>Control Panel</h1>
+
+  <div class="card">
+    <button onclick="logout()">Logout</button>
   </div>
 
-  <div class="row">
-    <div class="label">API Key</div>
-    <div class="value loading" id="apikey">Loading...</div>
+  <div class="stats">
+    <div class="card">
+      <h3>Active Servers</h3>
+      <p>0</p>
+    </div>
+    <div class="card">
+      <h3>CPU Usage</h3>
+      <p>0%</p>
+    </div>
+    <div class="card">
+      <h3>RAM Usage</h3>
+      <p>0 MB</p>
+    </div>
+    <div class="card">
+      <h3>Status</h3>
+      <p>Idle</p>
+    </div>
   </div>
-
-  <div class="row">
-    <div class="label">Plan</div>
-    <div class="value loading" id="plan">Loading...</div>
-  </div>
-
-  <div class="row">
-    <div class="label">Requests Used</div>
-    <div class="value loading" id="requests">Loading...</div>
-  </div>
-</div>
-
-<footer>
-  © 2026 SpiderX API — Dashboard
-</footer>
+</main>
 
 <script>
-  const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
+if (!token) location.href = "/host";
 
-  if (!token) {
-    location.href = "/site/";
-  }
+fetch("/api/users/me", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(r => {
+  if (!r.ok) throw new Error();
+})
+.catch(() => {
+  localStorage.clear();
+  location.href = "/host";
+});
 
-  fetch("/api/me", {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Unauthorized");
-    return res.json();
-  })
-  .then(user => {
-    document.getElementById("username").innerText = user.username;
-    document.getElementById("apikey").innerText = user.apiKey;
-    document.getElementById("plan").innerText = user.plan.toUpperCase();
-    document.getElementById("requests").innerText = user.requests;
-  })
-  .catch(() => {
-    localStorage.clear();
-    location.href = "/site/";
-  });
-
-  function logout() {
-    localStorage.clear();
-    location.href = "/site/";
-  }
+function logout() {
+  localStorage.clear();
+  location.href = "/host";
+}
 </script>
 
 </body>
